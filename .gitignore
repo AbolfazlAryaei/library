@@ -1,3 +1,24 @@
-node_modules
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables
 .env
-db.sqlite
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# SQLite database
+*.sqlite
