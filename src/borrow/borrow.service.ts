@@ -33,22 +33,20 @@ export class BorrowService {
       book: findBook,
       donatedAt: new Date(),
     });
-  return  await this.borrowREP.save(borrow);
+    return await this.borrowREP.save(borrow);
   }
 
-  findAll() {
-    return `This action returns all borrow`;
+  async returnBook(borrowID: number) {
+    const findborrow = await this.borrowREP.findOneBy({ id: borrowID });
+    if (!findborrow) throw new UnauthorizedException('not found borrow');
+    findborrow.retern = new Date();
+    return this.borrowREP.save(findborrow);
+  }
+  async findAll() {
+    return await this.borrowREP.find({
+      relations: ['user', 'book'],
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} borrow`;
-  }
-
-  update(id: number, updateBorrowDto: UpdateBorrowDto) {
-    return `This action updates a #${id} borrow`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} borrow`;
-  }
+ 
 }
