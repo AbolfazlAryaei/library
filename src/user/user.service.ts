@@ -47,7 +47,7 @@ export class UserService {
     return {
       access_token: token,
       user: {
-        id: user.id,
+        userId: user.id,
         email: user.email,
         username: user.username,
         role: user.roles,

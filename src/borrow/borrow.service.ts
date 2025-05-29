@@ -3,7 +3,7 @@ import { CreateBorrowDto } from './dto/create-borrow.dto';
 import { UpdateBorrowDto } from './dto/update-borrow.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Book } from 'src/book/entities/book.entity';
 import { Borrow } from './entities/borrow.entity';
 
@@ -28,12 +28,19 @@ export class BorrowService {
     const findBook = await this.bookREP.findOneBy({ id: bookID });
     if (!findBook) throw new UnauthorizedException('Book not found');
 
+    if (!findBook.isAvailable)
+      throw new UnauthorizedException('Book is not available for borrowing');
+
     const borrow = this.borrowREP.create({
       user: findUser,
       book: findBook,
       donatedAt: new Date(),
     });
-    return await this.borrowREP.save(borrow);
+    const savrborrow = await this.borrowREP.save(borrow);
+    findBook.isAvailable = false;
+
+    await this.bookREP.save(findBook);
+    return savrborrow;
   }
 
   async returnBook(borrowID: number) {
@@ -48,5 +55,17 @@ export class BorrowService {
     });
   }
 
- 
+  async findOne(id: number) {
+    const borrow = await this.borrowREP.find({
+      where: {
+        user: { id: id },
+        retern: IsNull(),
+      },
+      relations: ['book'],
+    });
+    console.log(id);
+    console.log(borrow);
+    if (!borrow) throw new UnauthorizedException('Borrow not found');
+    return borrow;
+  }
 }

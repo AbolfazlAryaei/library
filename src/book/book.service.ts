@@ -24,13 +24,12 @@ export class BookService {
       author,
       description,
       borrowCount,
-      isAvailable: false,
     });
     return this.bookREP.save(book);
   }
 
   findAll() {
-    return `This action returns all book`;
+      return this.bookREP.find(); 
   }
 
   findOne(id: number) {
